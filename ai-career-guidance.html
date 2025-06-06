@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Career Recommendation Guidance System</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+<style>
+  /* Global styles */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  nav {
+    background: #222;
+    color: #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  nav .logo {
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: #7fffd4;
+    cursor: default;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.25rem;
+  }
+  nav ul li {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    text-transform: uppercase;
+    color: #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  nav ul li:hover,
+  nav ul li.active {
+    background: #7fffd4;
+    color: #222;
+    border-radius: 4px;
+  }
+
+  /* Landing/Home Page Styles */
+  #home {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+  #home h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0.4rem;
+    font-weight: 900;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  #home p {
+    font-size: 1.5rem;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    font-weight: 500;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.25);
+  }
+  #home .btn-primary {
+    background-color: #00ffbf;
+    color: #222;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgb(0 255 191 / 0.5);
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+  }
+  #home .btn-primary:hover {
+    background-color: #00d8a3;
+  }
+  #home .hero-image {
+    margin-top: 3rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* About Page Styles */
+  #about {
+    background-color: #fff9f7;
+    min-height: 80vh;
+    padding: 4rem 2rem;
+    color: #4a403a;
+  }
+  #about .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  #about h2 {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #e47963;
+    padding-bottom: 0.25rem;
+    font-weight: 900;
+  }
+  #about p {
+    font-size: 1.25rem;
+    line-height: 1.75;
+  }
+  #about .icon {
+    font-size: 4rem;
+    color: #e47963;
+    margin-bottom: 1rem;
+  }
+
+  /* Contact Page Styles */
+  #contact {
+    background: #333843;
+    color: #eeeeee;
+    min-height: 80vh;
+    padding: 3.5rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #contact form {
+    background: #444c56;
+    padding: 2.5rem 2rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.25);
+  }
+  #contact form h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 900;
+    text-align: center;
+    color: #00ffbf;
+  }
+  #contact label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #bfbfbf;
+  }
+  #contact input[type="text"],
+  #contact input[type="email"],
+  #contact textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1.3rem;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    resize: vertical;
+    font-family: inherit;
+  }
+  #contact textarea {
+    min-height: 90px;
+  }
+  #contact button {
+    width: 100%;
+    background-color: #00ffbf;
+    color: #222;
+    font-weight: 700;
+    border: none;
+    border-radius: 30px;
+    padding: 1rem 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+  }
+  #contact button:hover {
+    background-color: #00d8a3;
+  }
+
+  /* Quiz Page Styles */
+  #quiz {
+    background: #1e293b;
+    color: #cbd5e1;
+    min-height: 85vh;
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  #quiz .quiz-container {
+    max-width: 700px;
+    width: 100%;
+    background: #334155;
+    border-radius: 12px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 0 15px 2px rgba(255,255,255,0.1);
+  }
+  #quiz h2 {
+    margin-bottom: 1rem;
+    font-weight: 900;
+    text-align: center;
+    font-size: 2rem;
+    color: #7fffd4;
+  }
+  #quiz .question {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  #quiz ul {
+    list-style: none;
+    padding: 0;
+  }
+  #quiz li {
+    background: #475569;
+    margin-bottom: 0.8rem;
+    padding: 12px 15px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    font-weight: 600;
+  }
+  #quiz li:hover {
+    background-color: #64748b;
+  }
+  #quiz li.selected {
+    background-color: #7fffd4;
+    color: #1e293b;
+    font-weight: 900;
+  }
+  #quiz button.submit-btn {
+    margin-top: 1.8rem;
+    width: 100%;
+    padding: 1rem 0;
+    font-size: 1.2rem;
+    font-weight: 900;
+    border: none;
+    border-radius: 30px;
+    background-color: #00ffbf;
+    color: #222;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #quiz button.submit-btn:disabled {
+    background-color: #62c9b0;
+    cursor: default;
+  }
+  #quiz button.submit-btn:hover:not(:disabled) {
+    background-color: #00d8a3;
+  }
+
+  /* Result Page Styles */
+  #result {
+    background: #fff2e8;
+    min-height: 85vh;
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #result .result-container {
+    max-width: 600px;
+    width: 100%;
+    background: #ffe4d6;
+    border-radius: 15px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.13);
+    text-align: center;
+  }
+  #result h2 {
+    font-weight: 900;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #e47963;
+  }
+  #result p {
+    font-size: 1.3rem;
+    color: #55311c;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+  #result button.restart-btn {
+    background-color: #e47963;
+    color: #fff;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #result button.restart-btn:hover {
+    background-color: #c96a52;
+  }
+
+  /* Responsive */
+  @media (max-width: 650px) {
+    #home h1 {
+      font-size: 2.5rem;
+    }
+    #about h2 {
+      font-size: 2rem;
+    }
+    #quiz .quiz-container, #result .result-container, #contact form {
+      padding: 1.5rem 1.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><i class="fa-solid fa-robot"></i> CareerAI</div>
+  <ul id="nav-links">
+    <li class="active" data-target="home">Home</li>
+    <li data-target="about">About</li>
+    <li data-target="quiz">Quiz</li>
+    <li data-target="result">Result</li>
+    <li data-target="contact">Contact</li>
+  </ul>
+</nav>
+
+<main>
+  <!-- Landing/Home Page -->
+  <section id="home" class="page active">
+    <h1>Welcome to CareerAI</h1>
+    <p>Discover your ideal career path powered by AI-based recommendations designed just for you.</p>
+    <button class="btn-primary" id="start-quiz-btn">Take the Career Quiz</button>
+    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80" alt="AI and Career" class="hero-image" />
+  </section>
+
+  <!-- About Page -->
+  <section id="about" class="page">
+    <div class="container">
+      <div class="icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h2>About CareerAI</h2>
+      <p>CareerAI leverages advanced artificial intelligence algorithms to analyze your skills, interests, and personality traits to generate personalized career recommendations. Our system provides an interactive quiz to better understand you and help you find the path that best suits your unique profile.</p>
+      <p>Whether you are a student, professional looking for a change, or simply curious about the vast array of career options, CareerAI is here to guide your journey with clarity and confidence.</p>
+    </div>
+  </section>
+
+  <!-- Quiz Page -->
+  <section id="quiz" class="page">
+    <div class="quiz-container">
+      <h2>Career Recommendation Quiz</h2>
+      <div id="quiz-content">
+        <p>Loading quiz questions...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Result Page -->
+  <section id="result" class="page">
+    <div class="result-container">
+      <h2>Your Career Recommendation</h2>
+      <p id="result-text">Take the quiz first to see your personalized career path!</p>
+      <button class="restart-btn" id="restart-btn">Take Quiz Again</button>
+    </div>
+  </section>
+
+  <!-- Contact Page -->
+  <section id="contact" class="page">
+    <form id="contact-form">
+      <h2>Contact Us</h2>
+      <label for="name">Name</label>
+      <input type="text" placeholder="Your name" id="name" required />
+      <label for="email">Email</label>
+      <input type="email" placeholder="Your email" id="email" required />
+      <label for="message">Message</label>
+      <textarea id="message" placeholder="Your message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+</main>
+
+<script>
+(() => {
+  // SPA Navigation
+  const navLinks = document.querySelectorAll('#nav-links li');
+  const pages = document.querySelectorAll('main .page');
+  const startQuizBtn = document.getElementById('start-quiz-btn');
+  const restartBtn = document.getElementById('restart-btn');
+
+  function showPage(targetId) {
+    pages.forEach(page => {
+      if(page.id === targetId) {
+        page.classList.add('active');
+      } else {
+        page.classList.remove('active');
+      }
+    });
+    navLinks.forEach(link => {
+      if(link.dataset.target === targetId) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      showPage(link.dataset.target);
+      if(link.dataset.target === 'quiz') {
+        loadQuiz();
+      }
+    });
+  });
+
+  startQuizBtn.addEventListener('click', () => {
+    showPage('quiz');
+    loadQuiz();
+  });
+  restartBtn.addEventListener('click', () => {
+    showPage('quiz');
+    loadQuiz();
+  });
+
+  // Quiz data fetch simulation (in real usage, fetch from app.py API)
+  function fetchQuizData() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve([
+          {
+            id: 1,
+            question: "Which subject do you enjoy the most?",
+            options: [
+              { text: "Mathematics", score: {engineering: 2, data_science: 3} },
+              { text: "Arts", score: {design: 3, marketing: 2} },
+              { text: "Biology", score: {medicine: 3, research: 2} },
+              { text: "Computer Science", score: {software_dev: 3, data_science: 2} }
+            ]
+          },
+          {
+            id: 2,
+            question: "What type of work environment do you prefer?",
+            options: [
+              { text: "Office-based", score: {marketing: 2, business: 3} },
+              { text: "Laboratory/Research", score: {research: 3, medicine: 2} },
+              { text: "Outdoor or field work", score: {environmental: 3, civil_engineering: 2} },
+              { text: "Remote / Flexible", score: {software_dev: 3, data_science: 2} }
+            ]
+          },
+          {
+            id: 3,
+            question: "Which skills best describe you?",
+            options: [
+              { text: "Analytical thinking", score: {data_science: 3, software_dev: 2} },
+              { text: "Creativity", score: {design: 3, marketing: 2} },
+              { text: "Empathy and communication", score: {business: 2, medicine: 3} },
+              { text: "Problem-solving", score: {engineering: 3, research: 2} }
+            ]
+          },
+          {
+            id: 4,
+            question: "What motivates you most in a career?",
+            options: [
+              { text: "Innovating and building", score: {engineering: 3, software_dev: 2} },
+              { text: "Helping people", score: {medicine: 3, business: 2} },
+              { text: "Leading teams", score: {business: 3, marketing: 2} },
+              { text: "Designing and creating", score: {design: 3, marketing: 1} }
+            ]
+          }
+        ]);
+      }, 800);
+    });
+  }
+
+  // Mapping career keys to full names and descriptions
+  const careerProfiles = {
+    engineering: {
+      name: "Engineering",
+      description: "You have a natural aptitude for technical problem-solving and innovation. Careers in civil, mechanical, electrical, or aerospace engineering might suit you well."
+    },
+    data_science: {
+      name: "Data Science",
+      description: "Your analytical skills and love for numbers make you a great fit for data science, analytics, and AI careers."
+    },
+    design: {
+      name: "Design & Creative Arts",
+      description: "Creative and artistic skills indicate potential success in graphic design, UX/UI, advertising, or fine arts."
+    },
+    marketing: {
+      name: "Marketing & Communications",
+      description: "Your strengths in creativity and communication open avenues in marketing, advertising, and brand management."
+    },
+    medicine: {
+      name: "Medicine & Healthcare",
+      description: "Compassion and scientific curiosity make healthcare, medicine, nursing or research fulfilling paths for you."
+    },
+    research: {
+      name: "Scientific Research",
+      description: "Your problem-solving and curiosity orient you towards research in sciences, technology, and academia."
+    },
+    software_dev: {
+      name: "Software Development",
+      description: "A passion for computers and logical thinking directs you towards software engineering and application development."
+    },
+    business: {
+      name: "Business & Management",
+      description: "Leadership and communication qualities pave the way for careers in business administration, management, and entrepreneurship."
+    },
+    environmental: {
+      name: "Environmental Science",
+      description: "If you like outdoor work and nature, roles in environmental science, conservation, and sustainability might be ideal."
+    },
+    civil_engineering: {
+      name: "Civil Engineering",
+      description: "Your interest in building and outdoor work is well matched with civil engineering and construction management."
+    }
+  };
+
+  let currentQuiz = [];
+  let currentAnswers = new Map();
+
+  // Load quiz questions dynamically
+  const quizContent = document.getElementById('quiz-content');
+
+  function loadQuiz() {
+    quizContent.innerHTML = '<p>Loading quiz questions...</p>';
+    currentAnswers.clear();
+
+    fetchQuizData().then(questions => {
+      currentQuiz = questions;
+      renderQuestion(0);
+    }).catch(() => {
+      quizContent.innerHTML = '<p>Failed to load quiz questions. Please try again later.</p>';
+    });
+  }
+
+  function renderQuestion(index) {
+    if(index >= currentQuiz.length) {
+      showResult();
+      return;
+    }
+    const q = currentQuiz[index];
+    quizContent.innerHTML = '';
+    const questionEl = document.createElement('div');
+    questionEl.className = 'question';
+    questionEl.textContent = q.question;
+    quizContent.appendChild(questionEl);
+
+    const ul = document.createElement('ul');
+    q.options.forEach((opt, i) => {
+      const li = document.createElement('li');
+      li.textContent = opt.text;
+      li.addEventListener('click', () => {
+        currentAnswers.set(q.id, i);
+        // Highlight selected
+        Array.from(ul.children).forEach(child => child.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+      ul.appendChild(li);
+    });
+    quizContent.appendChild(ul);
+
+    const btn = document.createElement('button');
+    btn.className = 'submit-btn';
+    btn.textContent = index === currentQuiz.length - 1 ? 'Submit Quiz' : 'Next Question';
+    btn.disabled = true;
+
+    // Enable button only if an option is selected
+    ul.addEventListener('click', () => {
+      btn.disabled = false;
+    });
+
+    // Also monitor selection on mount to check if selection exists
+    ul.addEventListener('click', (e) => {
+      // will be triggered on any li click
+      btn.disabled = false;
+    });
+
+    btn.addEventListener('click', () => {
+      if(!currentAnswers.has(q.id)) return;
+      renderQuestion(index + 1);
+    });
+    quizContent.appendChild(btn);
+
+    // If answer already exists highlight it and enable submit button
+    if(currentAnswers.has(q.id)) {
+      const selectedIndex = currentAnswers.get(q.id);
+      ul.children[selectedIndex].classList.add('selected');
+      btn.disabled = false;
+    }
+  }
+
+  // Calculate and show results
+  function showResult() {
+    // Calculate scores
+    const scores = {};
+    currentQuiz.forEach(q => {
+      const ansIndex = currentAnswers.get(q.id);
+      if(ansIndex !== undefined) {
+        const answerScores = q.options[ansIndex].score;
+        for(const key in answerScores) {
+          scores[key] = (scores[key] || 0) + answerScores[key];
+        }
+      }
+    });
+
+    // Find career with max score
+    let maxScore = -Infinity;
+    let bestCareer = null;
+    for(const key in scores) {
+      if(scores[key] > maxScore) {
+        maxScore = scores[key];
+        bestCareer = key;
+      }
+    }
+    const resultSection = document.getElementById('result');
+    const resultText = document.getElementById('result-text');
+    if(bestCareer && careerProfiles[bestCareer]) {
+      resultText.innerHTML = `<strong>${careerProfiles[bestCareer].name}</strong>: ${careerProfiles[bestCareer].description}`;
+    } else {
+      resultText.innerHTML = "Your answers did not match a clear career recommendation. Try taking the quiz again.";
+    }
+    showPage('result');
+  }
+
+  // Contact form submission (simulate)
+  const contactForm = document.getElementById('contact-form');
+  contactForm.addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Thank you for contacting us, ' + contactForm.name.value + '! We will get back to you soon.');
+    contactForm.reset();
+  });
+
+  // Initialize homepage active state
+  showPage('home');
+})();
+</script>
+</body>
+</html>
+
